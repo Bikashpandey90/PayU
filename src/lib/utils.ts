@@ -8,8 +8,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
 
-export function formatNumber(num: number): string {
-  return (num / 100).toLocaleString('en-IN', {
+export function formatNumber(num?: number | null): string {
+  const safeNum = typeof num === "number" && !isNaN(num) ? num : 0;
+
+  return safeNum.toLocaleString('en-IN', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });

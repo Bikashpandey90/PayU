@@ -2,77 +2,106 @@ import { FC, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 // import SignInPage from "@/pages/login/login";
-import HomePage from "@/pages/homepage/homepage";
 import LoginPage from "@/pages/login/login";
-import AuthLayout from "@/pages/auth/authlayout";
 import SignInPage from "@/pages/signup/signinpage";
 import ForgotPasswordPage from "@/pages/forgot-password/forgot";
-import { AllUsers, CreatePost, EditPost, Explore, Home, PostDetails, Profile, Saved, UpdateProfile } from "@/pages/sub-pages";
+import HomeLayout from "@/pages/layout/homelayout";
+import TravelPage from "@/pages/travel/page";
+import FlightPage from "@/pages/flight/page";
+import TransactPage from "@/pages/transact/page";
+import { AuthProvider } from "@/context/auth-context";
+import LoadPage from "@/pages/load/page";
+import { AccountProvider } from "@/context/account-context";
+import ServicesPage from "@/pages/services/page";
+import IndexPage from "@/pages/index/page";
+import TransacitonPage from "@/pages/transactions/page";
+import SettingsPage from "@/pages/settings/page";
+import TransactionDetail from "@/pages/transactions/detail";
+import SuccessPage from "@/pages/payment/successPage";
+import FailurePage from "@/pages/payment/failurePage";
+import ProfilePage from "@/pages/profile/page";
+import SecurityPage from "@/pages/security/page";
+import TopUpPage from "@/pages/topup/page";
+import ZooPage from "@/pages/zoo/page";
+import CableCarPage from "@/pages/cablecar/page";
+import AntiVirusPage from "@/pages/antivirus/page";
 
 
 
 const Routing: FC = () => {
     const router = createBrowserRouter([
         {
-            path: "",
-            element: <HomePage />,
+            path: "/",
+            element: <HomeLayout />,
             children: [
                 {
+
                     index: true,
-                    element: <Home />
+                    element: <IndexPage />,
                 },
                 {
-                    path: "explore",
-                    element: <Explore />
-                },
-                {
-                    path: "saved",
-                    element: <Saved />
-
-                },
-                {
-                    path: "all-users",
-                    element: <AllUsers />
-                },
-                {
-                    path: "create-post",
-                    element: <CreatePost />
+                    path: 'travel',
+                    element: <TravelPage />
                 }, {
-                    path: "update-post/:id",
-                    element: <EditPost />
+                    path: 'flights',
+                    element: <FlightPage />
                 }, {
-                    path: "posts/:id",
-                    element: <PostDetails />
-
+                    path: 'send',
+                    element: <TransactPage />
                 }, {
-                    path: "profile/:id",
-                    element: <Profile />
+                    path: 'load',
+                    element: <LoadPage />
                 }, {
-                    path: "update-profile",
-                    element: <UpdateProfile />
-                }
-
-
-
-            ],
-        },
-        {
-            path: "/auth",
-            element: <AuthLayout />,
-            children: [
-                {
-                    path: "login",
-                    element: <LoginPage />,
-                    index: true
+                    path: 'services',
+                    element: <ServicesPage />
                 }, {
-                    path: "sign-in",
-                    element: <SignInPage />
+                    path: 'transactions',
+                    element: <TransacitonPage />
                 }, {
-                    path: "forgot-password",
-                    element: <ForgotPasswordPage />
+                    path: 'settings',
+                    element: <SettingsPage />
+                }, {
+                    path: 'transactions/:id',
+                    element: <TransactionDetail />
+                }, {
+                    path: 'payment/success',
+                    element: <SuccessPage />
+                }, {
+                    path: 'payment/failure',
+                    element: <FailurePage />
+                }, {
+                    path: 'profile',
+                    element: <ProfilePage />
+                }, {
+                    path: 'security',
+                    element: <SecurityPage />
+                }, {
+                    path: 'topup',
+                    element: <TopUpPage />
+                }, {
+                    path: "zoo",
+                    element: <ZooPage />
+                }, {
+                    path: 'cable-car',
+                    element: <CableCarPage />
+                }, {
+                    path: 'anti-virus',
+                    element: <AntiVirusPage />
                 }
             ]
+        },
 
+
+        {
+            path: "login",
+            element: <LoginPage />,
+            index: true
+        }, {
+            path: "sign-in",
+            element: <SignInPage />
+        }, {
+            path: "forgot-password",
+            element: <ForgotPasswordPage />
         }
 
     ])
@@ -80,7 +109,11 @@ const Routing: FC = () => {
     const [queryClient] = useState(() => new QueryClient())
     return (<>
         <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} />
+            <AuthProvider>
+                <AccountProvider>
+                    <RouterProvider router={router} />
+                </AccountProvider>
+            </AuthProvider>
         </QueryClientProvider>
     </>)
 }

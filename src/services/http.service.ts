@@ -7,7 +7,8 @@ export interface HeaderConfigPropsType {
     params?: {
         page?: number;
         limit?: number;
-        search?: null | string
+        search?: null | string;
+        type?: null | string;
     }
 
 }
