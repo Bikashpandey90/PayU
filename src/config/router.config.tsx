@@ -25,6 +25,15 @@ import TopUpPage from "@/pages/topup/page";
 import ZooPage from "@/pages/zoo/page";
 import CableCarPage from "@/pages/cablecar/page";
 import AntiVirusPage from "@/pages/antivirus/page";
+import GovernmentPage from "@/pages/government/page";
+import ElecPayPage from "@/pages/electricity/payment";
+import CommunityElectricityPage from "@/pages/electricity/page";
+import BlueBookPage from "@/pages/bluebook/page";
+import MeroSharePage from "@/pages/meroshare/page";
+import MeroSharePayment from "@/pages/meroshare/payment";
+import WasteManagementPage from "@/pages/waste/page";
+import WasteManagementPaymentPage from "@/pages/waste/payment";
+import DataPacksPage from "@/pages/datapack/page";
 
 
 
@@ -87,6 +96,33 @@ const Routing: FC = () => {
                 }, {
                     path: 'anti-virus',
                     element: <AntiVirusPage />
+                }, {
+                    path: 'government',
+                    element: <GovernmentPage />
+                }, {
+                    path: 'community-electricity',
+                    element: <CommunityElectricityPage />
+                }, {
+                    path: 'community-electricity/:provider',
+                    element: <ElecPayPage />
+                }, {
+                    path: 'bluebook',
+                    element: <BlueBookPage />
+                }, {
+                    path: 'meroshare',
+                    element: <MeroSharePage />
+                }, {
+                    path: 'meroshare-payment',
+                    element: <MeroSharePayment />
+                }, {
+                    path: 'waste-management',
+                    element: <WasteManagementPage />
+                }, {
+                    path: 'waste-payment',
+                    element: <WasteManagementPaymentPage />
+                }, {
+                    path: 'data-packs',
+                    element: <DataPacksPage />
                 }
             ]
         },

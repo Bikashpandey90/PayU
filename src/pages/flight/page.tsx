@@ -2,7 +2,7 @@ import { ArrowRightLeft, Calendar, PlaneLanding, PlaneTakeoff, Users } from "luc
 
 const FlightPage = () => {
     return (
-        <div className="pt-16 pb-20 px-6 max-w-7xl mx-auto">
+        <div className="pt-16 pb-20 px-6 max-w-6xl mx-auto">
             <section className="mb-12">
                 <div className="mb-8">
                     <h1 className="text-5xl font-extrabold tracking-tight text-on-surface mb-2">Find your next flow.</h1>

@@ -3,7 +3,7 @@ import { Fingerprint, Gauge } from "lucide-react"
 const SettingsPage = () => {
     return (
         <div className="min-h-screen flex justify-center">
-            <main className="pt-10 pb-20   px-6 max-w-7xl mx-auto w-full">
+            <main className="pt-10 pb-20  max-w-6xl mx-auto w-full">
                 <header className="mb-12 lg:px-10">
                     <h1 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Security &amp; Control</h1>
                     <p className="text-on-surface-variant text-lg">Manage your digital vault's boundaries and privacy.</p>

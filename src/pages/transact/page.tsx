@@ -80,6 +80,7 @@ const TransactPage = () => {
         if (sliderX > max * 0.8) {
             setSliderX(max)
             setIsCompleted(true)
+            if (navigator.vibrate) navigator.vibrate(40)
 
 
         } else {
@@ -91,10 +92,17 @@ const TransactPage = () => {
         if (loading) return;
         setLoading(true)
         try {
+
+            const generateId = () => {
+                if (typeof crypto !== "undefined" && crypto.randomUUID) {
+                    return crypto.randomUUID()
+                }
+                return `${Date.now()}-${Math.random().toString(16).slice(2)}`
+            }
             const payload = {
                 to: selectedRecipient?._id || '',
                 amount: Number(amount),
-                idempotencyKey: crypto.randomUUID()
+                idempotencyKey: generateId()
             }
 
             const response = await transactSvc.create(payload)
@@ -137,6 +145,7 @@ const TransactPage = () => {
         }, [search]
     )
 
+
     useEffect(() => {
         fetchUsers({ page: 1 })
     }, [])
@@ -148,6 +157,8 @@ const TransactPage = () => {
             clearTimeout(timeout)
         }
     }, [fetchUsers])
+
+    const isSearching = search.trim().length > 0;
 
     const UserSkeleton = () => {
         return (
@@ -163,7 +174,7 @@ const TransactPage = () => {
 
 
     return (
-        <div className="pt-10 pb-32 max-w-[1200px] mx-auto px-8 ">
+        <div className="pt-10 pb-32 max-w-[1200px] mx-auto px-4 md:px-8 ">
             {
                 !(step === 3) && (
                     <div className="mb-12">
@@ -193,26 +204,46 @@ const TransactPage = () => {
                                                 setSearch(e.target.value)
                                             }} className="w-full bg-surface-container-low border-none rounded-lg py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary-container text-on-surface placeholder:text-on-surface-variant" placeholder="Search name, or email..." type="text" />
                                         </div>
-                                        <p className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-6">Recent Contacts</p>
+                                        <p className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-6">
+                                            {isSearching ? "Search Results" : "Recent Contacts"}
+                                        </p>
                                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                                             {userLoading
                                                 ? Array.from({ length: 3 }).map((_, i) => <UserSkeleton key={i} />)
-                                                : users.map((contact) => (
-                                                    <button
-                                                        key={contact?._id}
-                                                        onClick={() => { setSelectedRecipient(contact); nextStep(); }}
-                                                        className="flex flex-col items-center p-6 rounded-2xl bg-surface hover:bg-surface-container-high transition-all group"
-                                                    >
-                                                        <img src={contact?.image || '/images/profile-placeholder.svg'} alt={contact.name} className="w-16 h-16 rounded-full object-cover mb-4 ring-2 ring-transparent group-hover:ring-primary" />
-                                                        <span className="font-bold text-on-surface text-sm">{contact.name}</span>
-                                                        <span className="text-xs text-on-surface-variant">{contact.email}</span>
-                                                    </button>
-                                                ))}
+                                                :
+                                                users.length === 0 ? (
+                                                    <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+                                                        <UserSearch className="h-10 w-10 text-gray-400 mb-3" />
+                                                        <p className="text-on-surface font-semibold">
+                                                            {isSearching ? "No users found" : "No recent contacts"}
+                                                        </p>
+                                                        <p className="text-sm text-on-surface-variant mt-1">
+                                                            {isSearching
+                                                                ? "Try searching with a different name or email."
+                                                                : "Start by adding a new contact."}
+                                                        </p>
+                                                    </div>
+                                                )
+                                                    : users.map((contact) => (
+                                                        <button
+                                                            key={contact?._id}
+                                                            onClick={() => { setSelectedRecipient(contact); nextStep(); }}
+                                                            className="flex flex-col items-center p-6 rounded-2xl bg-surface hover:bg-surface-container-high transition-all group"
+                                                        >
+                                                            <img src={contact?.image || '/images/profile-placeholder.svg'} alt={contact.name} className="w-16 h-16 rounded-full object-cover mb-4 ring-2 ring-transparent group-hover:ring-primary" />
+                                                            <span className="font-bold text-on-surface text-sm">{contact.name}</span>
+                                                            <span className="text-xs text-on-surface-variant break-all text-center">{contact.email}</span>
+                                                        </button>
+                                                    ))}
 
-                                            <button className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-outline-variant hover:border-primary hover:bg-primary/5 transition-all text-on-surface-variant hover:text-primary">
-                                                <span className="material-symbols-outlined text-3xl mb-2" data-icon="add_circle"><PlusCircle className="h-6 w-6" /></span>
-                                                <span className="font-bold text-sm">New</span>
-                                            </button>
+                                            {
+                                                !isSearching && users.length > 0 && (
+                                                    <button className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-outline-variant hover:border-primary hover:bg-primary/5 transition-all text-on-surface-variant hover:text-primary">
+                                                        <span className="material-symbols-outlined text-3xl mb-2" data-icon="add_circle"><PlusCircle className="h-6 w-6" /></span>
+                                                        <span className="font-bold text-sm">New</span>
+                                                    </button>
+                                                )
+                                            }
                                         </div>
                                     </section>
                                 )
@@ -233,7 +264,7 @@ const TransactPage = () => {
                             }
 
                             {step === 3 && (
-                                <section className="pt-0 pb-10 px-6 flex flex-col items-center max-w-lg mx-auto min-h-screen">
+                                <section className="pt-0 pb-10 px-0 md:px-6 flex flex-col items-center max-w-lg mx-auto min-h-screen">
                                     <div className="mb-8 animate-fade-in">
                                         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-secondary-fixed text-on-secondary-fixed rounded-full">
                                             <span className="material-symbols-outlined text-[18px] text-primary" data-icon="shield_lock" ><ShieldCheck className="h-5 w-5" /></span>
@@ -319,7 +350,7 @@ const TransactPage = () => {
                                             disabled={!isCompleted}
                                             onClick={() => {
                                                 handleConfirmPayment()
-                                            }} className="mt-6 w-full py-5 bg-primary text-center text-on-primary font-headline font-extrabold rounded-2xl shadow-xl active:scale-95 transition-all duration-200">
+                                            }} className="mt-12 w-full py-5 bg-primary text-center text-on-primary font-headline font-extrabold rounded-2xl shadow-xl active:scale-95 transition-all duration-200">
                                             {loading ? (<LoaderCircle className="h-6 w-6 animate-spin flex justify-self-center" />) : "Confirm Payment"}
                                         </button>
                                     </div>

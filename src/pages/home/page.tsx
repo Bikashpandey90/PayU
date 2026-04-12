@@ -75,7 +75,7 @@ const HomePage = () => {
                 </div>
             </section>
             <section className="py-24 px-6 bg-surface-container-low">
-                <div className="max-w-7xl mx-auto">
+                <div className="max-w-6xl mx-auto">
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
                         <div>
                             <h2 className="text-headline-sm font-extrabold text-primary mb-2">Kinetic Features</h2>

@@ -71,7 +71,7 @@ const EnterAmount = ({
             <div className="flex justify-end mt-8 gap-6">
                 <button
                     onClick={cancelAction}
-                    className="bg-gray-200 text-center text-gray-600 px-10 py-4 rounded-full font-bold tracking-wide hover:scale-105 transition-transform disabled:opacity-50"
+                    className="bg-gray-200 text-center text-gray-600 px-8 py-4 rounded-full font-bold tracking-wide hover:scale-105 transition-transform disabled:opacity-50"
                 >
                     Cancel
                 </button>
@@ -81,7 +81,7 @@ const EnterAmount = ({
                     disabled={loading}
                     className="bg-primary text-center text-white px-10 py-4 rounded-full font-bold tracking-wide hover:scale-105 transition-transform disabled:opacity-50"
                 >
-                    {loading ? (<LoaderCircle className="h-5 w-5 animate-spin" />) : primaryActionLabel || "Load Wallet"}
+                    {loading ? (<LoaderCircle className="h-5 w-5 animate-spin" />) : primaryActionLabel || "Load"}
                 </button>
             </div>
         </section>

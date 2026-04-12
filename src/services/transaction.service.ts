@@ -162,6 +162,21 @@ class TransactionService extends HttpService {
             console.log(exception)
         }
     }
+
+    getSpendingAnal = async (type: string) => {
+        try {
+            const response = await this.getRequest('/transaction/get-anal', {
+                auth: true,
+                params: {
+                    type: type
+                }
+            })
+            return response.data
+
+        } catch (exception) {
+            console.log(exception)
+        }
+    }
 }
 
 const transactSvc = new TransactionService()

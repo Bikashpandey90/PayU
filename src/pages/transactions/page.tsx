@@ -1,6 +1,6 @@
 import { AccountContext } from "@/context/account-context"
 import transactSvc from "@/services/transaction.service"
-import { ArrowDown, ArrowUp, Calendar, CircleCheck, CircleX, Download, ListFilter, LoaderCircle, Plus, RefreshCcw, ShieldCheck, Star, TrendingUp, Wallet, Zap } from "lucide-react"
+import { ArrowDown, ArrowUp, Calendar, CircleCheck, Download, ListFilter, LoaderCircle, Plus, ShieldCheck, Star, TrendingUp, Wallet } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 
@@ -93,7 +93,7 @@ const TransacitonPage = () => {
                         onClick={handleStatement} className="bg-secondary-container text-center text-on-secondary-container px-6 py-3 rounded-full font-semibold hover:opacity-90 transition-all flex items-center gap-2">
                         {downloading ? <LoaderCircle className="h-5 w-5 animate-spin" /> : (<>
                             <span className="material-symbols-outlined text-xl"><Download className="h-5 w-5" /></span>
-                            Export Statement
+                            Export
                         </>
                         )
                         }
@@ -166,7 +166,7 @@ const TransacitonPage = () => {
                                                 <span className="material-symbols-outlined text-[10px]" data-weight="fill" ><CircleCheck className="h-3 w-3" /></span>
                                                 {txn.status}
                                             </span>
-                                            <span className="text-xs text-on-surface-variant font-medium"> {new Date(txn.createdAt).toLocaleTimeString()} • P2P Transfer</span>
+                                            <span className="text-xs hidden md:block text-on-surface-variant font-medium"> {new Date(txn.createdAt).toLocaleTimeString()} • P2P Transfer</span>
                                         </div>
                                     </div>
                                 </div>

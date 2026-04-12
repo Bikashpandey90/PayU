@@ -44,12 +44,12 @@ const ServicesPage = () => {
                         </div>
                         <span className="font-bold text-sm">Internet</span>
                     </div>
-                    <div className="bg-surface-container-low hover:bg-surface-container-high transition-colors p-6 rounded-[2rem] flex flex-col items-center justify-center text-center cursor-pointer group">
+                    <NavLink to={'/electricity'} className="bg-surface-container-low hover:bg-surface-container-high transition-colors p-6 rounded-[2rem] flex flex-col items-center justify-center text-center cursor-pointer group">
                         <div className="w-14 h-14 rounded-2xl bg-surface-container-lowest flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
                             <span className="material-symbols-outlined text-primary text-3xl"><Zap className="h-6 w-6" /></span>
                         </div>
                         <span className="font-bold text-sm">Electricity</span>
-                    </div>
+                    </NavLink>
                     <NavLink to={'/flights'} className="bg-surface-container-low hover:bg-surface-container-high transition-colors p-6 rounded-[2rem] flex flex-col items-center justify-center text-center cursor-pointer group">
                         <div className="w-14 h-14 rounded-2xl bg-surface-container-lowest flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
                             <span className="material-symbols-outlined text-primary text-3xl"><PlaneTakeoff className="h-6 w-6" /></span>
@@ -95,12 +95,12 @@ const ServicesPage = () => {
                             </div>
                             <span className="text-sm font-semibold px-2">Data Packs</span>
                         </div>
-                        <div className="flex flex-col gap-3 group cursor-pointer">
+                        <NavLink to={'/community-electricity'} className="flex flex-col gap-3 group cursor-pointer">
                             <div className="aspect-square bg-surface-container-low rounded-3xl flex items-center justify-center group-hover:bg-surface-container-high transition-colors">
                                 <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-3xl"><UtilityPole className="h-6 w-6" /></span>
                             </div>
                             <span className="text-sm font-semibold px-2">Community Electricity</span>
-                        </div>
+                        </NavLink>
                         <div className="flex flex-col gap-3 group cursor-pointer">
                             <div className="aspect-square bg-surface-container-low rounded-3xl flex items-center justify-center group-hover:bg-surface-container-high transition-colors">
                                 <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-3xl"><Trash className="h-6 w-6" /></span>
@@ -134,10 +134,10 @@ const ServicesPage = () => {
                             <div className="w-16 h-16 rounded-2xl bg-secondary-container flex items-center justify-center flex-shrink-0 group-hover:bg-primary transition-colors">
                                 <span className="material-symbols-outlined text-primary text-3xl group-hover:text-on-primary"><ChartNoAxesCombined className="h-6 w-6" /></span>
                             </div>
-                            <div>
+                            <NavLink to={'/meroshare'}>
                                 <h3 className="font-bold text-lg">Meroshare &amp; Demat</h3>
                                 <p className="text-on-surface-variant text-sm">Renew your share accounts easily.</p>
-                            </div>
+                            </NavLink>
                         </div>
                         <div className="bg-surface-container-lowest p-6 rounded-[2.5rem] border border-outline-variant/10 hover:shadow-xl hover:shadow-on-surface/5 transition-all flex items-center gap-6 group cursor-pointer">
                             <div className="w-16 h-16 rounded-2xl bg-secondary-container flex items-center justify-center flex-shrink-0 group-hover:bg-primary transition-colors">
@@ -184,14 +184,14 @@ const ServicesPage = () => {
                         <h2 className="text-lg font-bold uppercase tracking-widest text-on-surface-variant">Government Services</h2>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="bg-surface-container-lowest border border-outline-variant/20 p-5 rounded-3xl flex items-center gap-4 hover:border-primary transition-colors cursor-pointer group">
+                        <NavLink to={'/government'} className="bg-surface-container-lowest border border-outline-variant/20 p-5 rounded-3xl flex items-center gap-4 hover:border-primary transition-colors cursor-pointer group">
                             <span className="material-symbols-outlined text-primary"><Landmark className="h-6 w-6" /></span>
                             <span className="font-bold text-sm">Govt. Payments</span>
-                        </div>
-                        <div className="bg-surface-container-lowest border border-outline-variant/20 p-5 rounded-3xl flex items-center gap-4 hover:border-primary transition-colors cursor-pointer group">
+                        </NavLink>
+                        <NavLink to={'/bluebook'} className="bg-surface-container-lowest border border-outline-variant/20 p-5 rounded-3xl flex items-center gap-4 hover:border-primary transition-colors cursor-pointer group">
                             <span className="material-symbols-outlined text-primary"><BookOpenText className="h-6 w-6" /></span>
                             <span className="font-bold text-sm">Bluebook</span>
-                        </div>
+                        </NavLink>
                         <div className="bg-surface-container-lowest border border-outline-variant/20 p-5 rounded-3xl flex items-center gap-4 hover:border-primary transition-colors cursor-pointer group">
                             <span className="material-symbols-outlined text-primary"><Users className="h-6 w-6" /></span>
                             <span className="font-bold text-sm">Social Security Fund</span>

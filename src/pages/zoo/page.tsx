@@ -2,22 +2,55 @@ import { AccountContext } from "@/context/account-context"
 import { formatNumber } from "@/lib/utils"
 import transactSvc from "@/services/transaction.service"
 import { ChevronRight, Clock, Minus, PlaneTakeoff, Plus, Ticket, Users } from "lucide-react"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 
 const ZooPage = () => {
     const { accountinfo } = useContext(AccountContext) as { accountinfo: any }
+
+    const [tickets, setTickets] = useState<any[]>([])
+    const [counts, setCounts] = useState<{ [key: number]: number }>({})
+
     const fetchZooDetails = async () => {
         try {
             const response = await transactSvc.fetchZooDetails()
-            console.log(response)
+            const details = response?.data?.details || []
+            setTickets(details)
+
+            // initialize counts
+            const initialCounts: any = {}
+            details.forEach((item: any) => {
+                initialCounts[item.id] = 0
+            })
+            setCounts(initialCounts)
+
 
         } catch (exception) {
             console.log(exception)
         }
     }
+
+    const increment = (id: number) => {
+        setCounts(prev => ({
+            ...prev,
+            [id]: prev[id] + 1
+        }))
+    }
+
+    const decrement = (id: number) => {
+        setCounts(prev => ({
+            ...prev,
+            [id]: Math.max(0, prev[id] - 1)
+        }))
+    }
     useEffect(() => {
         fetchZooDetails()
     }, [])
+
+    const total = tickets.reduce((sum, item) => {
+        return sum + (counts[item.id] || 0) * item.rate
+    }, 0)
+
+    const totalTickets = Object.values(counts).reduce((a, b) => a + b, 0)
 
     return (
         <main className="max-w-6xl mx-auto px-6 py-8 md:py-12 mb-24 md:mb-0">
@@ -34,8 +67,12 @@ const ZooPage = () => {
                 </div>
             </section>
 
+
+
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                
+
+
+
 
 
 

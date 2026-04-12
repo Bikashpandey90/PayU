@@ -6,6 +6,7 @@ export const AuthContext = createContext({});
 export const AuthProvider = ({ children }: Readonly<{ children: React.ReactNode }>) => {
 
 
+
     const [data, setData] = useState<any>();
 
 

@@ -1,11 +1,13 @@
 import { AccountContext } from "@/context/account-context"
 import { AuthContext } from "@/context/auth-context"
 import { formatNumber } from "@/lib/utils"
-import { UserType } from "@/services/auth.service"
+import authSvc, { UserType } from "@/services/auth.service"
 import transactSvc from "@/services/transaction.service"
 import { ArrowDown, ArrowUp, ChevronRight, CircleCheck, Download, File, Plus, PlusCircle, QrCode, Send, Share2, ShieldCheck, TrendingDown, Verified, Wallet, WalletMinimal } from "lucide-react"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
+
+import { Html5QrcodeScanner } from "html5-qrcode"
 
 export interface Account {
 
@@ -22,9 +24,81 @@ const DashPage = () => {
     const account = useContext(AccountContext) as { accountinfo: any }
     const [transactions, setTransactions] = useState<any[]>([])
     const [loading, setLoading] = useState(false)
-    const navigate = useNavigate()
+    const [analyticsType, setAnalyticsType] = useState<"week" | "month">("week");
+    const [spendingData, setSpendingData] = useState<any[]>([]);
+    const [analyticsError, setAnalyticsError] = useState("");
+    const [users, setUsers] = useState<UserType[]>([])
+
 
     const currentAccountId = account?.accountinfo?._id
+
+
+    const [openScanner, setOpenScanner] = useState(false);
+    const navigate = useNavigate();
+
+    const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+    const scannedRef = useRef(false);
+
+    // ✅ CLEANUP FUNCTION (critical)
+    const cleanupScanner = async () => {
+        try {
+            await scannerRef.current?.clear();
+        } catch (e) {
+            // ignore cleanup errors
+        }
+
+        scannerRef.current = null;
+        scannedRef.current = false;
+
+        const reader = document.getElementById("reader");
+        if (reader) reader.innerHTML = ""; // 🔥 prevents duplicate video
+    };
+
+    // ✅ INIT SCANNER ONLY WHEN OPEN
+    useEffect(() => {
+        if (!openScanner) return;
+
+        if (scannerRef.current) return; // prevent double init
+
+        const scanner = new Html5QrcodeScanner(
+            "reader",
+            {
+                fps: 10,
+                qrbox: { width: 280, height: 280 },
+                aspectRatio: 1.0,
+            },
+            false
+        );
+
+        scannerRef.current = scanner;
+
+        scanner.render(
+            async (decodedText) => {
+                if (scannedRef.current) return;
+                scannedRef.current = true;
+
+                try {
+                    const url = new URL(decodedText);
+                    const userId = url.searchParams.get("user");
+
+                    if (userId) {
+                        await cleanupScanner(); // 🔥 stop camera properly
+                        setOpenScanner(false);
+                        navigate(`/send?user=${userId}`);
+                    }
+                } catch (err) {
+                    console.log("Invalid QR");
+                }
+            },
+            () => {
+                // ignore scan errors
+            }
+        );
+
+        return () => {
+            cleanupScanner();
+        };
+    }, [openScanner]);
 
     const fetchRecentTransactions = async () => {
         setLoading(true)
@@ -42,7 +116,41 @@ const DashPage = () => {
     }
     useEffect(() => {
         fetchRecentTransactions()
+        fetchUsers()
     }, [])
+
+    const getAnal = async () => {
+        setAnalyticsError("");
+
+        try {
+            const response = await transactSvc.getSpendingAnal(analyticsType)
+            console.log(response)
+            setSpendingData(response?.detail)
+
+        } catch (exception) {
+            setAnalyticsError("Failed to load analytics");
+
+            console.log(exception)
+        }
+    }
+    useEffect(() => {
+        getAnal()
+    }, [analyticsType])
+
+    const fetchUsers = async () => {
+        try {
+            const response = await authSvc.fetchUsers(1, 5)
+            setUsers(response?.detail)
+
+        } catch (exception) {
+            console.log(exception)
+        }
+    }
+
+
+    const max = Math.max(...spendingData.map(i => i.amount || 0), 1);
+    const containerHeight = 200;
+
 
     const Skeleton = () => (
         <div className="animate-pulse bg-surface-container-lowest rounded-[2rem] p-5 flex justify-between items-center">
@@ -86,16 +194,18 @@ const DashPage = () => {
                             <span className="material-symbols-outlined"><PlusCircle className="h-5 w-5" /></span>
                             Load Wallet
                         </NavLink>
-                        <NavLink to={'/'} className="w-14 h-14 bg-surface-container-lowest flex items-center justify-center rounded-2xl shadow-xl shadow-on-surface/5 active:scale-95 transition-all">
+                        <button onClick={() => {
+                            setOpenScanner(true)
+                        }} className="w-14 h-14 bg-surface-container-lowest flex items-center justify-center rounded-2xl shadow-xl shadow-on-surface/5 active:scale-95 transition-all">
                             <span className="material-symbols-outlined text-primary text-3xl" ><QrCode className="h-6 w-6" /></span>
-                        </NavLink >
+                        </button >
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6 ">
                     <div className="md:col-span-8 bg-surface-container-low p-8 md:p-12 rounded-[2rem] flex flex-col justify-between">
                         <div className="flex flex-col md:flex-row items-start md:items-center gap-8">
                             <div className="relative">
-                                <img className="w-32 h-32 md:w-48 md:h-48 rounded-[2.5rem] object-cover" data-alt="Portrait of a young woman with a friendly expression"
+                                <img className="w-32 h-32 md:w-48 md:h-48 rounded-full object-cover" data-alt="Portrait"
                                     src={auth?.loggedInUser?.image || '/images/profile-placeholder.svg'}
                                 />
                                 <div className="absolute -bottom-2 -right-2 bg-primary/60  text-white p-3 rounded-full shadow-xl">
@@ -166,13 +276,13 @@ const DashPage = () => {
                                     </div>
                                     <span className="material-symbols-outlined text-on-surface-variant group-hover:translate-y-0.5 transition-transform"><ChevronRight className="h-5 w-5" /></span>
                                 </NavLink >
-                                <button className="w-full flex items-center justify-between p-4 bg-surface-container-low rounded-2xl hover:bg-surface-container-high transition-colors group">
+                                <NavLink to={'/security'} className="w-full flex items-center justify-between p-4 bg-surface-container-low rounded-2xl hover:bg-surface-container-high transition-colors group">
                                     <div className="flex items-center gap-3">
                                         <span className="material-symbols-outlined text-tertiary"><Verified className="h-5 w-5" /></span>
                                         <span className="font-bold text-on-surface">Security Audit</span>
                                     </div>
                                     <span className="material-symbols-outlined text-on-surface-variant group-hover:translate-y-0.5 transition-transform"><Download className="h-4 w-4" /></span>
-                                </button>
+                                </NavLink >
                             </div>
                         </div>
                     </div>
@@ -198,36 +308,109 @@ const DashPage = () => {
                                 <p className="text-on-surface-variant text-sm">You spent 12% less than last month</p>
                             </div>
                             <div className="flex gap-2">
-                                <span className="px-3 py-1 bg-surface-container-highest rounded-full text-xs font-bold">Week</span>
-                                <span className="px-3 py-1 bg-primary text-white rounded-full text-xs font-bold">Month</span>
+                                {
+                                    ['week', 'month'].map((type) => {
+                                        const active = analyticsType === type;
+
+                                        return (
+
+                                            <button
+                                                key={type}
+                                                onClick={() => {
+                                                    setAnalyticsType(type as "week" | "month")
+                                                }} className={`px-3 py-1 rounded-full text-xs font-bold
+                                                
+                                                ${active ? 'bg-primary text-white ' : 'bg-surface-container-highest'}`}>
+                                                {type.toUpperCase()}
+                                            </button >
+                                        )
+
+                                    })
+                                }
+
                             </div>
+
                         </div>
                         <div className="h-64 flex items-end gap-3 w-full">
-                            <div className="flex-1 bg-surface-container-high rounded-t-xl h-[40%] hover:bg-primary-fixed-dim transition-colors cursor-pointer"></div>
-                            <div className="flex-1 bg-surface-container-high rounded-t-xl h-[65%] hover:bg-primary-fixed-dim transition-colors cursor-pointer"></div>
-                            <div className="flex-1 bg-surface-container-high rounded-t-xl h-[35%] hover:bg-primary-fixed-dim transition-colors cursor-pointer"></div>
-                            <div className="flex-1 bg-surface-container-high rounded-t-xl h-[80%] hover:bg-primary-fixed-dim transition-colors cursor-pointer"></div>
-                            <div className="flex-1 bg-primary rounded-t-xl h-[95%] shadow-lg shadow-primary/20"></div>
-                            <div className="flex-1 bg-surface-container-high rounded-t-xl h-[50%] hover:bg-primary-fixed-dim transition-colors cursor-pointer"></div>
-                            <div className="flex-1 bg-surface-container-high rounded-t-xl h-[60%] hover:bg-primary-fixed-dim transition-colors cursor-pointer"></div>
+                            {analyticsError && (
+                                <div className="w-full flex flex-col items-center justify-center text-center">
+                                    <p className="text-red-500 text-sm mb-2">{analyticsError}</p>
+                                    <button
+                                        onClick={getAnal}
+                                        className="text-xs bg-primary text-white px-3 py-1 rounded-full"
+                                    >
+                                        Retry
+                                    </button>
+                                </div>
+                            )}
+                            {!analyticsError && spendingData.length === 0 && (
+                                <div className="w-full flex items-center justify-center text-sm text-gray-400">
+                                    No spending data available
+                                </div>
+                            )}
+                            {!analyticsError && spendingData.length > 0 &&
+                                spendingData.map((item, index) => {
+                                    const height = (item.amount / max) * containerHeight;
+
+                                    return (
+                                        <div key={index} className="flex-1 flex flex-col items-center gap-2">
+                                            <div
+                                                className={`w-full rounded-t-lg md:rounded-t-xl transition-all duration-700 ease-out ${index === spendingData.length - 1
+                                                    ? "bg-primary"
+                                                    : "bg-surface-container-high hover:bg-primary-fixed-dim"
+                                                    }`}
+                                                style={{
+                                                    height: `${height}px`,
+                                                    transform: `translateY(${loading ? "20px" : "0"})`,
+                                                    opacity: loading ? 0 : 1,
+                                                    transitionDelay: `${index * 80}ms`,
+
+                                                }}
+                                            />
+                                            <span className="text-xs text-on-surface-variant">{item.label}</span>
+                                        </div>
+                                    );
+                                })}
+
                         </div>
-                        <div className="absolute bottom-24 left-0 w-full h-[2px] bg-tertiary/20">
-                            <div className="h-full bg-tertiary w-3/4 shadow-[0_0_15px_#006242]"></div>
-                        </div>
+
                     </div>
                     <div className="md:col-span-4 bg-surface-container-low rounded-[2rem] p-8 flex flex-col items-center justify-center text-center">
                         <div className="w-full aspect-square bg-surface-container-lowest rounded-3xl p-6 flex items-center justify-center mb-6 shadow-sm">
-                            <div className="w-full h-full border-4 border-dashed border-primary-container/30 rounded-xl flex items-center justify-center">
-                                <span className="material-symbols-outlined text-[8rem] text-primary" ><QrCode className="h-32 w-32" /></span>
-                            </div>
+                            {account?.accountinfo?.qr ? (
+                                <img
+                                    src={account?.accountinfo?.qr}
+                                    alt="QR Code"
+                                    className="w-full h-full object-contain rounded-xl"
+                                />
+                            ) : (
+                                <div className="w-full h-full border-4 border-dashed border-primary-container/30 rounded-xl flex items-center justify-center">
+                                    <QrCode className="h-32 w-32 text-primary" />
+                                </div>
+                            )}
                         </div>
                         <h3 className="font-bold text-lg mb-2">My Vault ID</h3>
                         <p className="text-on-surface-variant text-sm mb-6">Scan to receive kinetic payments instantly</p>
                         <div className="flex gap-4">
-                            <button className="text-primary font-bold flex items-center gap-2">
+                            <button
+                                onClick={() => {
+                                    const link = document.createElement("a");
+                                    link.href = account?.accountinfo?.qr;
+                                    link.download = "payuwallet-qr.png";
+                                    link.click();
+                                }}
+                                className="text-primary font-bold flex items-center gap-2">
                                 Download  <span className="material-symbols-outlined text-sm"><Download className="h-4 w-4" /></span>
                             </button>
-                            <button className="text-primary font-bold flex items-center gap-2">
+                            <button
+                                onClick={() => {
+                                    navigator.share?.({
+                                        title: "PayuWallet QR",
+                                        text: "Scan to pay me",
+                                        url: account?.accountinfo?.qr,
+                                    });
+                                }}
+                                className="text-primary font-bold flex items-center gap-2">
                                 Share  <span className="material-symbols-outlined text-sm"><Share2 className="h-4 w-4" /></span>
                             </button>
                         </div>
@@ -244,6 +427,16 @@ const DashPage = () => {
                                 </div>
                                 <span className="text-label-md font-medium">Add New</span>
                             </div>
+                            {/* {
+                                users.map((user) => (
+                                    <div className="flex flex-col items-center gap-3 min-w-[100px] cursor-pointer group">
+                                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary transition-all">
+                                            <img alt="Friend" className="w-full h-full object-cover" data-alt="Portrait of a woman with red glasses" src={user?.image ?? '/images/profile-placeholder.svg'} />
+                                        </div>
+                                        <span className="text-label-md font-medium">{user?.name.split(' ')[0]} </span>
+                                    </div>
+                                ))
+                            } */}
                             <div className="flex flex-col items-center gap-3 min-w-[100px] cursor-pointer group">
                                 <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary transition-all">
                                     <img alt="Friend" className="w-full h-full object-cover" data-alt="Portrait of a woman with red glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9tGOs69-b0S8joSUyCKi6o4vwZ7_NFegJW5nNC4q9jj6JfMO2Ebn4NvdqkL-lqkKn1MtDoXHWUqCpqar8Ou-IUHRzLrihEyxqS6MD8h-CJmVgcmalr-WYhRJl-vEAuM2ApcOiqNmHS-okNpbFNZSEuTg_TOsWncGwCnEKc7G3PupCtRfNqTY9LXJjmQKTyBe4dTLoEXwJauOQCXg0Fq_LOchS2BU2yBRMuZCrii_j-omHxkYfgxwNWbN4lh70dJrWolbK9oKGAw" />
@@ -293,7 +486,7 @@ const DashPage = () => {
                             {loading ? Array.from({ length: 10 }).map((_, i) => <Skeleton key={i} />)
                                 :
                                 transactions.map((txn) => {
-                                    const isReceived = txn.to._id === currentAccountId
+                                    const isReceived = txn?.to?._id === currentAccountId
 
                                     return (
                                         <div key={txn._id} onClick={() => {
@@ -316,7 +509,7 @@ const DashPage = () => {
                                                             <span className="material-symbols-outlined text-[10px]" data-weight="fill" ><CircleCheck className="h-3 w-3" /></span>
                                                             {txn.status}
                                                         </span>
-                                                        <span className="text-xs text-on-surface-variant font-medium"> {new Date(txn.createdAt).toLocaleTimeString()} • P2P Transfer</span>
+                                                        <span className="text-xs hidden md:block text-on-surface-variant font-medium"> {new Date(txn.createdAt).toLocaleTimeString()} • P2P Transfer</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -339,6 +532,42 @@ const DashPage = () => {
                     </div>
                 </div>
             </div >
+
+
+            {openScanner && (
+                <div className="fixed inset-0 z-50 bg-black/60 flex items-end md:items-center justify-center">
+                    <div className="bg-white w-full md:w-[420px] rounded-2xl p-5">
+
+                        {/* HEADER */}
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="font-bold text-lg">Scan QR</h2>
+
+                            <button
+                                onClick={() => {
+                                    setOpenScanner(false);
+                                    cleanupScanner(); // 🔥 important
+                                }}
+                                className="text-xl"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* SCANNER */}
+                        <div className="relative">
+                            <div
+                                id="reader"
+                                className="rounded-2xl overflow-hidden"
+                            />
+                        </div>
+
+                        {/* HELP TEXT */}
+                        <p className="text-center text-sm text-gray-500 mt-4">
+                            Align QR inside the frame
+                        </p>
+                    </div>
+                </div>
+            )}
 
 
 

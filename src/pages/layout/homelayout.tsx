@@ -1,8 +1,9 @@
 import { LogoutModal } from "@/components/LogoutModal/modal"
+import { ScrollToTop } from "@/components/scroll/scrollToTop"
 import { AuthContext } from "@/context/auth-context"
 import { UserType } from "@/services/auth.service"
 import { ChevronDown, Globe, LayoutDashboard, LogOut, Settings, Share2, User } from "lucide-react"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { NavLink, Outlet } from "react-router-dom"
 
 const HomeLayout = () => {
@@ -11,7 +12,39 @@ const HomeLayout = () => {
     const [isOpen, setIsOpen] = useState(false)
 
 
+
     const user = loggedInUser
+
+    const navLinks = [
+        { name: "Home", path: "" },
+        { name: "Services", path: "/services" },
+        { name: "Security", path: "/security" },
+        { name: "Pricing", path: "/pricing" },
+    ];
+
+    const dropdownRef = useRef<HTMLDivElement>(null) // ref for dropdown
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setDropdownOpen(false)
+            }
+        }
+
+        const handleScroll = () => {
+            setDropdownOpen(false)
+        }
+
+        document.addEventListener("mousedown", handleClickOutside)
+        window.addEventListener("scroll", handleScroll, true) // capture scroll events
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside)
+            window.removeEventListener("scroll", handleScroll, true)
+        }
+    }, [])
+
+
     return (
         <>
             <div className="text-on-background bg-[#F7F9FB]">
@@ -40,15 +73,26 @@ const HomeLayout = () => {
                                 PayU
                             </span>
                         </NavLink>
-                        <div className="hidden md:flex items-center gap-8">
-                            <NavLink to={'/'} className="text-[#3F95EC] font-bold border-b-2 border-[#3F95EC] font-manrope text-sm py-1" >Home</NavLink>
-                            <NavLink to={'/services'} className="text-[#434656] dark:text-slate-400 font-manrope text-sm hover:bg-[#e0e3e5] dark:hover:bg-slate-700 transition-colors px-3 py-1 rounded" >Services</NavLink>
-                            <NavLink to={''} className="text-[#434656] dark:text-slate-400 font-manrope text-sm hover:bg-[#e0e3e5] dark:hover:bg-slate-700 transition-colors px-3 py-1 rounded" >Security</NavLink>
-                            <NavLink to={''} className="text-[#434656] dark:text-slate-400 font-manrope text-sm hover:bg-[#e0e3e5] dark:hover:bg-slate-700 transition-colors px-3 py-1 rounded" >Pricing</NavLink>
+                        <div className="hidden md:flex items-center gap-10">
+                            {navLinks.map((link) => (
+                                <NavLink
+                                    key={link?.name}
+                                    to={link?.path}
+                                    end={link.path === "/"}
+                                    className={({ isActive }) =>
+                                        `transition-all duration-300 ease-in-out ${isActive
+                                            ? "text-[#3F95EC] font-bold border-b-2 border-[#3F95EC] font-manrope text-sm py-1"
+                                            : "text-[#434656] dark:text-slate-400 font-manrope text-sm hover:bg-[#e0e3e5] dark:hover:bg-slate-700 px-3 py-1 rounded"
+                                        }`
+                                    }
+                                >
+                                    {link?.name}
+                                </NavLink>
+                            ))}
                         </div>
-                        
 
-                        <div className="flex items-center gap-4 relative">
+
+                        <div className="flex items-center gap-4 relative" ref={dropdownRef}>
                             {!user ? (
                                 <NavLink
                                     to="/login"
@@ -67,7 +111,7 @@ const HomeLayout = () => {
                                             alt="avatar"
                                             className="w-8 h-8 rounded-full object-cover"
                                         />
-                                        <span className="font-manrope font-medium">{user.name}</span>
+                                        <span className="font-manrope font-medium">{user?.name.split(' ')[0]}</span>
                                         <ChevronDown className="w-4 h-4" />
                                     </button>
                                     {dropdownOpen && (
@@ -115,6 +159,7 @@ const HomeLayout = () => {
                     </div>
                 </nav>
 
+                <ScrollToTop />
 
                 <Outlet />
                 <footer className="justify-self-center w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-[#f2f4f6] dark:bg-slate-800">

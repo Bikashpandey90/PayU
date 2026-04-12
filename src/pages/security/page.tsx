@@ -3,13 +3,13 @@ import { CircleCheck, Fingerprint, Laptop, Lightbulb, Lock, RectangleEllipsis, S
 const SecurityPage = () => {
     return (
 
-        <div className="p-6 md:p-12 max-w-7xl justify-self-center space-y-10">
+        <div className="p-6 md:p-6 max-w-6xl justify-self-center space-y-10">
             <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 bg-surface-container-low rounded-[2rem] p-8 flex flex-col md:flex-row items-center gap-10">
                     <div className="relative w-48 h-48 flex items-center justify-center">
                         <svg className="w-full h-full transform -rotate-90">
                             <circle className="text-surface-container-high" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-width="12"></circle>
-                            <circle className="text-tertiary transition-all duration-1000" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-dasharray="552.92" stroke-dashoffset="82.93" stroke-width="12"></circle>
+                            <circle className="text-primary transition-all duration-1000" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-dasharray="552.92" stroke-dashoffset="82.93" stroke-width="12"></circle>
                         </svg>
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
                             <span className="text-5xl font-extrabold text-on-surface">85</span>
@@ -20,10 +20,10 @@ const SecurityPage = () => {
                         <h3 className="text-2xl font-bold">Your Security Health is Strong</h3>
                         <p className="text-on-surface-variant leading-relaxed">Most of your security measures are up to date. Complete the remaining steps to reach a perfect 100/100 score and unlock VIP vault protection.</p>
                         <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                            <span className="px-4 py-2 bg-tertiary/10 text-tertiary rounded-full text-xs font-bold flex items-center gap-2">
+                            <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-xs font-bold flex items-center gap-2">
                                 <span className="material-symbols-outlined text-[16px]" ><CircleCheck className="h-5 w-5" /></span> 2FA Active
                             </span>
-                            <span className="px-4 py-2 bg-tertiary/10 text-tertiary rounded-full text-xs font-bold flex items-center gap-2">
+                            <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-xs font-bold flex items-center gap-2">
                                 <span className="material-symbols-outlined text-[16px]" ><CircleCheck className="h-5 w-5" /></span> Biometrics Enabled
                             </span>
                             <span className="px-4 py-2 bg-error-container/50 text-error rounded-full text-xs font-bold flex items-center gap-2">
@@ -48,7 +48,7 @@ const SecurityPage = () => {
                             </div>
                         </div>
                         <div className="flex gap-4 group cursor-pointer">
-                            <div className="w-10 h-10 rounded-xl bg-tertiary/10 text-tertiary flex items-center justify-center shrink-0 group-hover:bg-tertiary group-hover:text-white transition-all">
+                            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all">
                                 <span className="material-symbols-outlined"><Fingerprint className="h-5 w-5" /></span>
                             </div>
                             <div>
@@ -88,7 +88,7 @@ const SecurityPage = () => {
                                 </div>
                                 <div className="text-right">
                                     <p className="text-xs font-bold text-on-surface">Today, 10:45 AM</p>
-                                    <span className="text-[10px] px-2 py-1 bg-tertiary/10 text-tertiary rounded-full font-bold uppercase tracking-wider">Current</span>
+                                    <span className="text-[10px] px-2 py-1 bg-primary/10 text-primary rounded-full font-bold uppercase tracking-wider">Current</span>
                                 </div>
                             </div>
                             <div className="p-6 flex items-center justify-between hover:bg-surface-container transition-colors">
@@ -154,7 +154,7 @@ const SecurityPage = () => {
                         <h3 className="text-xl font-bold mb-6">Security Action History</h3>
                         <div className="space-y-8 relative before:content-[''] before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-[2px] before:bg-surface-container">
                             <div className="relative pl-12">
-                                <div className="absolute left-0 w-10 h-10 rounded-full bg-tertiary text-white flex items-center justify-center z-10 border-4 border-surface">
+                                <div className="absolute left-0 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center z-10 border-4 border-surface">
                                     <span className="material-symbols-outlined text-sm"><Lock className="h-5 w-5" /></span>
                                 </div>
                                 <div>

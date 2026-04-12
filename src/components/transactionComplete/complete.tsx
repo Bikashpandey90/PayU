@@ -4,7 +4,7 @@ import { CheckCircle, ChevronLeft, Copy, Share } from "lucide-react"
 const TransactionComplete = ({ onClose, data }: any) => {
     return (
 
-        <div className="flex-grow flex items-center justify-center px-4 py-8">
+        <div className="flex-grow flex items-center justify-center px-0 md:px-4 py-8">
             <div className="max-w-md w-full">
                 <div className="bg-surface-container-lowest rounded-3xl shadow-[0_20px_50px_rgba(25,28,30,0.06)] overflow-hidden relative">
                     <div className="pt-12 pb-8 flex flex-col items-center text-center">

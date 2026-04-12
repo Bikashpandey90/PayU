@@ -45,9 +45,17 @@ const LoadPage = () => {
         }
         try {
             setLoading(true)
+
+            const generateId = () => {
+                if (typeof crypto !== "undefined" && crypto.randomUUID) {
+                    return crypto.randomUUID()
+                }
+                return `${Date.now()}-${Math.random().toString(16).slice(2)}`
+            }
             const payload = {
                 amount: Number(amount),
-                provider: selectedMethod
+                provider: selectedMethod,
+                transaction_uuid: generateId()
             }
             const response = await transactSvc.loadWallet(payload)
             console.log(response)
@@ -201,7 +209,7 @@ const LoadPage = () => {
                                 Every transaction is protected by VaultPay's multi-layer encryption and 2FA. Experience the fastest way to move liquidity across your financial ecosystem.
                             </p>
                         </div>
-                        <button className="relative z-10 bg-white text-primary px-8 py-4 rounded-full font-bold text-sm tracking-widest uppercase whitespace-nowrap hover:scale-105 transition-transform">
+                        <button className="relative z-10 bg-white text-primary px-6 py-4 rounded-full font-bold text-sm tracking-widest uppercase whitespace-nowrap hover:scale-105 transition-transform">
                             Read Security Whitepaper
                         </button>
                     </section>
