@@ -107,9 +107,9 @@ const TransactionDetail = () => {
                 <div className="bg-surface-container-lowest rounded-[2rem] px-8 py-12 md:px-16 md:py-20 relative overflow-hidden shadow-[0_16px_40px_rgba(25,28,30,0.04)]">
                     <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-20">
                         <div className="space-y-4">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-tertiary/10 text-tertiary rounded-full">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full">
                                 <span className="material-symbols-outlined text-[18px]" ><CircleCheck className="h-5 w-5" /></span>
-                                <span className="text-sm font-bold tracking-wide uppercase">Payment Successful</span>
+                                <span className="text-sm font-bold tracking-wide uppercase">{transaction?.status === "COMPLETED" ? 'Payment Successful' : transaction?.status === "PENDING" ? 'Payment Pending' : transaction?.status}</span>
                             </div>
                             <div className="relative inline-block">
                                 <h1 className="text-[4rem] md:text-[5rem] font-extrabold leading-none tracking-tighter text-on-surface">

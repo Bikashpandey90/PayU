@@ -116,6 +116,15 @@ class AuthService extends HttpService {
             console.log(response)
         }
     }
+    getUserById = async (id: string) => {
+        try {
+            const response = await this.getRequest('/auth/user/' + id, { auth: true })
+            return response.data
+
+        } catch (exception) {
+            console.log(exception)
+        }
+    }
 
 }
 

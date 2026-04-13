@@ -192,3 +192,96 @@ input[type=number].no-spinner::-webkit-outer-spin-button {
 input[type=number].no-spinner {
     -moz-appearance: textfield; /* Firefox */
 }
+
+#reader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px; /* match your qrbox height */
+}
+
+/* Center the default html5-qrcode UI */
+#reader__scan_region,
+#reader__dashboard,
+#reader__camera_selection {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Center the placeholder text/icon */
+#reader img,
+#reader video {
+  margin: 0 auto !important;
+}
+
+
+
+
+
+
+ .test-toolbar-container {
+    position: fixed;
+    bottom: 60px;
+    right: 24px;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+  }
+  .test-credentials-panel {
+    background: #ffffff;
+    border: 1px solid #e0e3e5;
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    width: 280px;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .test-toggle-btn {
+    background: #3F95EC;
+    color: white;
+    width: 56px;
+    height: 56px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0, 64, 224, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .test-toggle-btn:hover {
+    transform: scale(1.05) rotate(90deg);
+  }
+  .credential-item {
+    margin-bottom: 16px;
+  }
+  .credential-item:last-child {
+    margin-bottom: 0;
+  }
+  .credential-label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #434656;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+    display: block;
+  }
+  .credential-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: #3F95EC;
+    background: #f0f4ff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: block;
+    border: 1px solid rgba(0, 64, 224, 0.1);
+  }

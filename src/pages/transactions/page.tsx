@@ -142,7 +142,7 @@ const TransacitonPage = () => {
                 {loading ? Array.from({ length: 10 }).map((_, i) => <Skeleton key={i} />)
                     :
                     transactions.map((txn) => {
-                        const isSent = txn.from._id === currentAccountId
+                        // const isSent = txn.from._id === currentAccountId
                         const isReceived = txn.to._id === currentAccountId
 
                         return (

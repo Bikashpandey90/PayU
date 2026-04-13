@@ -6,6 +6,7 @@ import authSvc, { UserType } from "@/services/auth.service";
 import transactSvc from "@/services/transaction.service";
 import { ChevronRight, CreditCard, LoaderCircle, PlusCircle, Search, ShieldCheck, UserSearch } from "lucide-react"
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 
 export interface Transaction {
@@ -34,6 +35,9 @@ const TransactPage = () => {
     const [isCompleted, setIsCompleted] = useState(false)
     const sliderRef = useRef<HTMLDivElement>(null)
     const [txStatus, setTxStatus] = useState<"idle" | "success" | "failure">("idle")
+
+    const [searchParams] = useSearchParams();
+    const qrUserId = searchParams.get("user");
 
     const { getAccountInfo } = useContext(AccountContext) as { getAccountInfo: Function }
     const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
@@ -158,6 +162,22 @@ const TransactPage = () => {
         }
     }, [fetchUsers])
 
+    useEffect(() => {
+        const loadRecipientFromQR = async () => {
+            if (!qrUserId) return;
+
+            try {
+                const res = await authSvc.getUserById(qrUserId);
+                setSelectedRecipient(res?.detail);
+                setStep(2);
+            } catch (err) {
+                console.log("QR user fetch failed", err);
+            }
+        };
+
+        loadRecipientFromQR();
+    }, [qrUserId]);
+
     const isSearching = search.trim().length > 0;
 
     const UserSkeleton = () => {
@@ -255,7 +275,7 @@ const TransactPage = () => {
                                         setAmount={setAmount}
                                         primaryAction={nextStep}
                                         cancelAction={cancelTransaction}
-                                        primaryActionLabel="Next Step"
+                                        primaryActionLabel="Continue"
                                         loading={loading}
 
                                     />
@@ -378,7 +398,7 @@ const TransactPage = () => {
                                                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                                                 }`}
                                         >
-                                            Next Step
+                                            Next
                                         </button>
                                     </div>
                                 )

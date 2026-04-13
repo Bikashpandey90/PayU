@@ -1,5 +1,6 @@
 import { LogoutModal } from "@/components/LogoutModal/modal"
 import { ScrollToTop } from "@/components/scroll/scrollToTop"
+import AnimatedToolbar from "@/components/toolbar/toolbar"
 import { AuthContext } from "@/context/auth-context"
 import { UserType } from "@/services/auth.service"
 import { ChevronDown, Globe, LayoutDashboard, LogOut, Settings, Share2, User } from "lucide-react"
@@ -100,6 +101,13 @@ const HomeLayout = () => {
                                 >
                                     Login
                                 </NavLink>
+                                // <Button
+                                //     isActive={false}
+                                //     onClick={() => {
+
+                                //     }}
+                                //     label="Login"
+                                // />
                             ) : (
                                 <div className="relative">
                                     <button
@@ -180,6 +188,7 @@ const HomeLayout = () => {
                 </footer>
             </div>
 
+            <AnimatedToolbar />
             <LogoutModal isOpen={isOpen} setIsOpen={setIsOpen} />
 
         </>

@@ -118,7 +118,7 @@ const TopUpPage = () => {
                         <EnterAmount
                             amount={amount}
                             setAmount={setAmount}
-                            primaryActionLabel="Next Step"
+                            primaryActionLabel="Continue"
                             primaryAction={nextStep}
                             cancelAction={onCancel}
 

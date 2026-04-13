@@ -3,11 +3,12 @@ import { AuthContext } from "@/context/auth-context"
 import { formatNumber } from "@/lib/utils"
 import authSvc, { UserType } from "@/services/auth.service"
 import transactSvc from "@/services/transaction.service"
-import { ArrowDown, ArrowUp, ChevronRight, CircleCheck, Download, File, Plus, PlusCircle, QrCode, Send, Share2, ShieldCheck, TrendingDown, Verified, Wallet, WalletMinimal } from "lucide-react"
+import { ArrowDown, ArrowUp, ChevronRight, CircleCheck, Download, FileText, LoaderCircle, Plus, PlusCircle, QrCode, Send, Share2, ShieldCheck, TrendingDown, Verified, Wallet, WalletMinimal } from "lucide-react"
 import { useContext, useEffect, useRef, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 
 import { Html5QrcodeScanner } from "html5-qrcode"
+import qrSvc from "@/services/qr.service"
 
 export interface Account {
 
@@ -28,6 +29,9 @@ const DashPage = () => {
     const [spendingData, setSpendingData] = useState<any[]>([]);
     const [analyticsError, setAnalyticsError] = useState("");
     const [users, setUsers] = useState<UserType[]>([])
+    const qrRef = useRef<HTMLDivElement | null>(null);
+    const [creating, setCreating] = useState(false)
+    const [qrError, setQrError] = useState("");
 
 
     const currentAccountId = account?.accountinfo?._id
@@ -39,22 +43,19 @@ const DashPage = () => {
     const scannerRef = useRef<Html5QrcodeScanner | null>(null);
     const scannedRef = useRef(false);
 
-    // ✅ CLEANUP FUNCTION (critical)
     const cleanupScanner = async () => {
         try {
             await scannerRef.current?.clear();
         } catch (e) {
-            // ignore cleanup errors
         }
 
         scannerRef.current = null;
         scannedRef.current = false;
 
         const reader = document.getElementById("reader");
-        if (reader) reader.innerHTML = ""; // 🔥 prevents duplicate video
+        if (reader) reader.innerHTML = "";
     };
 
-    // ✅ INIT SCANNER ONLY WHEN OPEN
     useEffect(() => {
         if (!openScanner) return;
 
@@ -79,6 +80,7 @@ const DashPage = () => {
 
                 try {
                     const url = new URL(decodedText);
+                    console.log(url)
                     const userId = url.searchParams.get("user");
 
                     if (userId) {
@@ -114,10 +116,40 @@ const DashPage = () => {
             setLoading(false)
         }
     }
+
+
+
+    const createMyQr = async () => {
+        setQrError("");
+        setCreating(true);
+
+        try {
+            if (!user || !qrRef.current) {
+                setCreating(false);
+                return;
+            }
+
+            await new Promise(requestAnimationFrame);
+
+            const qr = await qrSvc.createSelfQr(user);
+
+            qrRef.current.innerHTML = "";
+            qr.append(qrRef.current);
+
+        } catch (e) {
+            console.log(e);
+            setQrError("Failed to generate QR");
+        } finally {
+            setCreating(false);
+        }
+    };
     useEffect(() => {
         fetchRecentTransactions()
         fetchUsers()
     }, [])
+    useEffect(() => {
+        createMyQr()
+    }, [user])
 
     const getAnal = async () => {
         setAnalyticsError("");
@@ -141,6 +173,8 @@ const DashPage = () => {
         try {
             const response = await authSvc.fetchUsers(1, 5)
             setUsers(response?.detail)
+            console.log(users)
+
 
         } catch (exception) {
             console.log(exception)
@@ -150,6 +184,59 @@ const DashPage = () => {
 
     const max = Math.max(...spendingData.map(i => i.amount || 0), 1);
     const containerHeight = 200;
+
+
+    const handleDownloadQR = () => {
+        const canvas = qrRef.current?.querySelector("canvas");
+
+        if (!canvas) {
+            alert("QR not ready");
+            return;
+        }
+
+        const url = canvas.toDataURL("image/png");
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "payuwallet-qr.png";
+        link.click();
+    };
+    const handleShareQR = async () => {
+        try {
+            const canvas = qrRef.current?.querySelector("canvas");
+
+            if (!canvas) {
+                alert("QR not ready");
+                return;
+            }
+
+            const blob = await new Promise<Blob | null>((resolve) =>
+                canvas.toBlob(resolve, "image/png")
+            );
+
+            if (!blob) {
+                alert("Failed to prepare QR");
+                return;
+            }
+
+            const file = new File([blob], "payuwallet-qr.png", {
+                type: "image/png",
+            });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    title: "PayuWallet QR",
+                    text: "Scan to pay me",
+                    files: [file],
+                });
+            } else {
+                // fallback
+                alert("Sharing not supported on this device");
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
 
     const Skeleton = () => (
@@ -190,7 +277,7 @@ const DashPage = () => {
                             <span className="material-symbols-outlined"><Send className="h-5 w-5" /></span>
                             Send Money
                         </NavLink>
-                        <NavLink to={'/load'} className="bg-secondary-container text-base sm:text-base text-on-secondary-container px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:bg-surface-container-highest transition-all active:scale-95">
+                        <NavLink to={'/load'} className="bg-surface-container text-base sm:text-base text-on-secondary-container px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:bg-surface-container-highest transition-all active:scale-95">
                             <span className="material-symbols-outlined"><PlusCircle className="h-5 w-5" /></span>
                             Load Wallet
                         </NavLink>
@@ -271,7 +358,7 @@ const DashPage = () => {
                             <div className="space-y-4">
                                 <NavLink to={'/transactions'} className="w-full flex items-center justify-between p-4 bg-surface-container-low rounded-2xl hover:bg-surface-container-high transition-colors group">
                                     <div className="flex items-center gap-3">
-                                        <span className="material-symbols-outlined text-primary"><File className="h-5 w-5" /></span>
+                                        <span className="material-symbols-outlined text-primary"><FileText className="h-5 w-5" /></span>
                                         <span className="font-bold text-on-surface">Statement</span>
                                     </div>
                                     <span className="material-symbols-outlined text-on-surface-variant group-hover:translate-y-0.5 transition-transform"><ChevronRight className="h-5 w-5" /></span>
@@ -376,16 +463,32 @@ const DashPage = () => {
 
                     </div>
                     <div className="md:col-span-4 bg-surface-container-low rounded-[2rem] p-8 flex flex-col items-center justify-center text-center">
-                        <div className="w-full aspect-square bg-surface-container-lowest rounded-3xl p-6 flex items-center justify-center mb-6 shadow-sm">
-                            {account?.accountinfo?.qr ? (
-                                <img
-                                    src={account?.accountinfo?.qr}
-                                    alt="QR Code"
-                                    className="w-full h-full object-contain rounded-xl"
-                                />
-                            ) : (
-                                <div className="w-full h-full border-4 border-dashed border-primary-container/30 rounded-xl flex items-center justify-center">
-                                    <QrCode className="h-32 w-32 text-primary" />
+                        <div className="w-full aspect-square bg-surface-container-lowest rounded-3xl p-6 flex items-center justify-center mb-6 shadow-sm relative">
+
+                            {/* QR always mounted */}
+                            <div
+                                ref={qrRef}
+                                className={`w-[200px] h-[200px] flex items-center justify-center transition-opacity duration-200 ${creating || qrError ? "opacity-20" : "opacity-100"
+                                    }`}
+                            />
+
+                            {/* Loading overlay */}
+                            {creating && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-white/70 rounded-3xl">
+                                    <LoaderCircle className="h-10 w-10 animate-spin text-primary" />
+                                </div>
+                            )}
+
+                            {/* Error overlay */}
+                            {!creating && qrError && (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/90 rounded-3xl">
+                                    <p className="text-red-500 text-sm mb-3">{qrError}</p>
+                                    <button
+                                        onClick={createMyQr}
+                                        className="text-xs bg-primary text-white px-3 py-1 rounded-full"
+                                    >
+                                        Retry
+                                    </button>
                                 </div>
                             )}
                         </div>
@@ -393,23 +496,12 @@ const DashPage = () => {
                         <p className="text-on-surface-variant text-sm mb-6">Scan to receive kinetic payments instantly</p>
                         <div className="flex gap-4">
                             <button
-                                onClick={() => {
-                                    const link = document.createElement("a");
-                                    link.href = account?.accountinfo?.qr;
-                                    link.download = "payuwallet-qr.png";
-                                    link.click();
-                                }}
+                                onClick={handleDownloadQR}
                                 className="text-primary font-bold flex items-center gap-2">
                                 Download  <span className="material-symbols-outlined text-sm"><Download className="h-4 w-4" /></span>
                             </button>
                             <button
-                                onClick={() => {
-                                    navigator.share?.({
-                                        title: "PayuWallet QR",
-                                        text: "Scan to pay me",
-                                        url: account?.accountinfo?.qr,
-                                    });
-                                }}
+                                onClick={handleShareQR}
                                 className="text-primary font-bold flex items-center gap-2">
                                 Share  <span className="material-symbols-outlined text-sm"><Share2 className="h-4 w-4" /></span>
                             </button>
@@ -536,7 +628,7 @@ const DashPage = () => {
 
             {openScanner && (
                 <div className="fixed inset-0 z-50 bg-black/60 flex items-end md:items-center justify-center">
-                    <div className="bg-white w-full md:w-[420px] rounded-2xl p-5">
+                    <div className="bg-white w-full md:w-[420px] rounded-t-3xl md:rounded-2xl p-5">
 
                         {/* HEADER */}
                         <div className="flex justify-between items-center mb-4">

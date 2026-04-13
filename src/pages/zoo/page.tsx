@@ -51,6 +51,8 @@ const ZooPage = () => {
     }, 0)
 
     const totalTickets = Object.values(counts).reduce((a, b) => a + b, 0)
+    console.log(decrement, increment, total, totalTickets)
+
 
     return (
         <main className="max-w-6xl mx-auto px-6 py-8 md:py-12 mb-24 md:mb-0">

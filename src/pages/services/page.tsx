@@ -89,24 +89,24 @@ const ServicesPage = () => {
                             </div>
                             <span className="text-sm font-semibold px-2">Khanepani</span>
                         </div>
-                        <div className="flex flex-col gap-3 group cursor-pointer">
+                        <NavLink to={'/data-packs'} className="flex flex-col gap-3 group cursor-pointer">
                             <div className="aspect-square bg-surface-container-low rounded-3xl flex items-center justify-center group-hover:bg-surface-container-high transition-colors">
                                 <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-3xl"><Signal className="h-6 w-6" /></span>
                             </div>
                             <span className="text-sm font-semibold px-2">Data Packs</span>
-                        </div>
+                        </NavLink>
                         <NavLink to={'/community-electricity'} className="flex flex-col gap-3 group cursor-pointer">
                             <div className="aspect-square bg-surface-container-low rounded-3xl flex items-center justify-center group-hover:bg-surface-container-high transition-colors">
                                 <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-3xl"><UtilityPole className="h-6 w-6" /></span>
                             </div>
                             <span className="text-sm font-semibold px-2">Community Electricity</span>
                         </NavLink>
-                        <div className="flex flex-col gap-3 group cursor-pointer">
+                        <NavLink to={'/waste-management'} className="flex flex-col gap-3 group cursor-pointer">
                             <div className="aspect-square bg-surface-container-low rounded-3xl flex items-center justify-center group-hover:bg-surface-container-high transition-colors">
                                 <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-3xl"><Trash className="h-6 w-6" /></span>
                             </div>
                             <span className="text-sm font-semibold px-2">Waste Management</span>
-                        </div>
+                        </NavLink>
                         <div className="flex flex-col gap-3 group cursor-pointer">
                             <div className="aspect-square bg-surface-container-low rounded-3xl flex items-center justify-center group-hover:bg-surface-container-high transition-colors">
                                 <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-3xl"><Phone className="h-6 w-6" /></span>

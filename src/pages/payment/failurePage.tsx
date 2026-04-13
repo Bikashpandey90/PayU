@@ -3,9 +3,9 @@ import FailureResponse from "@/components/failureResponse/failure"
 const FailurePage = () => {
     let transaction;
     let amount;
-    const onRetry = () => {
+    // const onRetry = () => {
 
-    }
+    // }
     return (
         <>
             <div className="pt-10 pb-32 max-w-7xl mx-auto px-8 ">

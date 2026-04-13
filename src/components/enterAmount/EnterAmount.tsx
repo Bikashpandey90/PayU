@@ -79,7 +79,7 @@ const EnterAmount = ({
                     type="button"
                     onClick={primaryAction}
                     disabled={loading}
-                    className="bg-primary text-center text-white px-10 py-4 rounded-full font-bold tracking-wide hover:scale-105 transition-transform disabled:opacity-50"
+                    className="bg-primary text-center text-white px-8 py-4 rounded-full font-bold tracking-wide hover:scale-105 transition-transform disabled:opacity-50"
                 >
                     {loading ? (<LoaderCircle className="h-5 w-5 animate-spin" />) : primaryActionLabel || "Load"}
                 </button>
