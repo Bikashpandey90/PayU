@@ -37,7 +37,8 @@ const TransactionDetail = () => {
             const response = await transactSvc.download(id as string)
             console.log(response)
             if (response) {
-                const fileUrl = `http://localhost:9005${response.data.receiptUrl}`;
+                const fileUrl = `${import.meta.env.VITE_APP_BACKEND_URL}${response.data.receiptUrl}`;
+
                 window.open(fileUrl, "_blank");
             }
         } catch (exception) {

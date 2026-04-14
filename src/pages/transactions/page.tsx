@@ -38,7 +38,7 @@ const TransacitonPage = () => {
             const response = await transactSvc.statement()
             console.log(response)
             if (response) {
-                const fileUrl = `http://localhost:9005${response.data.statementUrl}`;
+                const fileUrl = `${import.meta.env.VITE_APP_BACKEND_URL}${response.data.statementUrl}`;
                 window.open(fileUrl, "_blank");
             }
 

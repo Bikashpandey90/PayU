@@ -34,6 +34,7 @@ import MeroSharePayment from "@/pages/meroshare/payment";
 import WasteManagementPage from "@/pages/waste/page";
 import WasteManagementPaymentPage from "@/pages/waste/payment";
 import DataPacksPage from "@/pages/datapack/page";
+import NotFoundPage from "@/pages/notfound/page";
 
 
 
@@ -125,6 +126,11 @@ const Routing: FC = () => {
                     element: <DataPacksPage />
                 }
             ]
+        },
+
+        {
+            path: '*',
+            element: <NotFoundPage />
         },
 
 
