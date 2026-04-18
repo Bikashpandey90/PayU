@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // import SignInPage from "@/pages/login/login";
 import LoginPage from "@/pages/login/login";
 import SignInPage from "@/pages/signup/signinpage";
@@ -35,129 +35,176 @@ import WasteManagementPage from "@/pages/waste/page";
 import WasteManagementPaymentPage from "@/pages/waste/payment";
 import DataPacksPage from "@/pages/datapack/page";
 import NotFoundPage from "@/pages/notfound/page";
-
-
+import SocialSecurityPage from "@/pages/socialSecurity/page";
+import LandLinePage from "@/pages/landline/page";
+import SocialSecurityPaymentPage from "@/pages/socialSecurity/payment";
+import EMIPage from "@/pages/emi/page";
+import SupportPage from "@/pages/support/page";
 
 const Routing: FC = () => {
-    const router = createBrowserRouter([
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <HomeLayout />,
+      children: [
         {
-            path: "/",
-            element: <HomeLayout />,
-            children: [
-                {
-
-                    index: true,
-                    element: <IndexPage />,
-                },
-                {
-                    path: 'travel',
-                    element: <TravelPage />
-                }, {
-                    path: 'flights',
-                    element: <FlightPage />
-                }, {
-                    path: 'send',
-                    element: <TransactPage />
-                }, {
-                    path: 'load',
-                    element: <LoadPage />
-                }, {
-                    path: 'services',
-                    element: <ServicesPage />
-                }, {
-                    path: 'transactions',
-                    element: <TransacitonPage />
-                }, {
-                    path: 'settings',
-                    element: <SettingsPage />
-                }, {
-                    path: 'transactions/:id',
-                    element: <TransactionDetail />
-                }, {
-                    path: 'payment/success',
-                    element: <SuccessPage />
-                }, {
-                    path: 'payment/failure',
-                    element: <FailurePage />
-                }, {
-                    path: 'profile',
-                    element: <ProfilePage />
-                }, {
-                    path: 'security',
-                    element: <SecurityPage />
-                }, {
-                    path: 'topup',
-                    element: <TopUpPage />
-                }, {
-                    path: "zoo",
-                    element: <ZooPage />
-                }, {
-                    path: 'cable-car',
-                    element: <CableCarPage />
-                }, {
-                    path: 'anti-virus',
-                    element: <AntiVirusPage />
-                }, {
-                    path: 'government',
-                    element: <GovernmentPage />
-                }, {
-                    path: 'community-electricity',
-                    element: <CommunityElectricityPage />
-                }, {
-                    path: 'community-electricity/:provider',
-                    element: <ElecPayPage />
-                }, {
-                    path: 'bluebook',
-                    element: <BlueBookPage />
-                }, {
-                    path: 'meroshare',
-                    element: <MeroSharePage />
-                }, {
-                    path: 'meroshare-payment',
-                    element: <MeroSharePayment />
-                }, {
-                    path: 'waste-management',
-                    element: <WasteManagementPage />
-                }, {
-                    path: 'waste-payment',
-                    element: <WasteManagementPaymentPage />
-                }, {
-                    path: 'data-packs',
-                    element: <DataPacksPage />
-                }
-            ]
+          index: true,
+          element: <IndexPage />,
         },
-
         {
-            path: '*',
-            element: <NotFoundPage />
+          path: "travel",
+          element: <TravelPage />,
         },
-
-
         {
-            path: "login",
-            element: <LoginPage />,
-            index: true
-        }, {
-            path: "sign-in",
-            element: <SignInPage />
-        }, {
-            path: "forgot-password",
-            element: <ForgotPasswordPage />
-        }
+          path: "flights",
+          element: <FlightPage />,
+        },
+        {
+          path: "send",
+          element: <TransactPage />,
+        },
+        {
+          path: "load",
+          element: <LoadPage />,
+        },
+        {
+          path: "services",
+          element: <ServicesPage />,
+        },
+        {
+          path: "transactions",
+          element: <TransacitonPage />,
+        },
+        {
+          path: "settings",
+          element: <SettingsPage />,
+        },
+        {
+          path: "transactions/:id",
+          element: <TransactionDetail />,
+        },
+        {
+          path: "payment/success",
+          element: <SuccessPage />,
+        },
+        {
+          path: "payment/failure",
+          element: <FailurePage />,
+        },
+        {
+          path: "profile",
+          element: <ProfilePage />,
+        },
+        {
+          path: "security",
+          element: <SecurityPage />,
+        },
+        {
+          path: "topup",
+          element: <TopUpPage />,
+        },
+        {
+          path: "zoo",
+          element: <ZooPage />,
+        },
+        {
+          path: "cable-car",
+          element: <CableCarPage />,
+        },
+        {
+          path: "anti-virus",
+          element: <AntiVirusPage />,
+        },
+        {
+          path: "government",
+          element: <GovernmentPage />,
+        },
+        {
+          path: "community-electricity",
+          element: <CommunityElectricityPage />,
+        },
+        {
+          path: "community-electricity/:provider",
+          element: <ElecPayPage />,
+        },
+        {
+          path: "bluebook",
+          element: <BlueBookPage />,
+        },
+        {
+          path: "meroshare",
+          element: <MeroSharePage />,
+        },
+        {
+          path: "meroshare-payment",
+          element: <MeroSharePayment />,
+        },
+        {
+          path: "waste-management",
+          element: <WasteManagementPage />,
+        },
+        {
+          path: "waste-payment",
+          element: <WasteManagementPaymentPage />,
+        },
+        {
+          path: "data-packs",
+          element: <DataPacksPage />,
+        },
+        {
+          path: "social-security",
+          element: <SocialSecurityPage />,
+        },
+        {
+          path: "social-security/payment",
+          element: <SocialSecurityPaymentPage />,
+        },
+        {
+          path: "landline",
+          element: <LandLinePage />,
+        },
+        {
+          path: "emi",
+          element: <EMIPage />,
+        },
+        {
+          path: "support",
+          element: <SupportPage />,
+        },
+      ],
+    },
 
-    ])
+    {
+      path: "*",
+      element: <NotFoundPage />,
+    },
+    {
+      path: "login",
+      element: <LoginPage />,
+      index: true,
+    },
+    {
+      path: "sign-in",
+      element: <SignInPage />,
+    },
+    {
+      path: "forgot-password",
+      element: <ForgotPasswordPage />,
+    },
+  ]);
 
-    const [queryClient] = useState(() => new QueryClient())
-    return (<>
-        <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <AccountProvider>
-                    <RouterProvider router={router} />
-                </AccountProvider>
-            </AuthProvider>
-        </QueryClientProvider>
-    </>)
-}
+  const [queryClient] = useState(() => new QueryClient());
+  return (
+    <>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <AccountProvider>
+            <RouterProvider router={router} />
+          </AccountProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </>
+  );
+};
 
-export default Routing
+export default Routing;

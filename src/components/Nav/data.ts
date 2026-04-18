@@ -15,8 +15,10 @@ export const TEST_CREDENTIALS: Record<
     "/load": {
         title: "Wallets",
         items: [
-            { label: "eSewa ID", value: "9841XXXXXX" },
-            { label: "Khalti ID", value: "9801XXXXXX" },
+            { label: "eSewa ID", value: "9806800001" },
+            { label: "Password", value: "Nepal@123" },
+            { label: "OTP", value: "123456" },
+
         ],
     },
 

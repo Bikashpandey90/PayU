@@ -1,13 +1,7 @@
 const SocialSecurityPage = () => {
     return (
-        <main className="max-w-4xl mx-auto px-6 py-10 pb-32">
-            <nav aria-label="Breadcrumb" className="flex items-center gap-2 mb-8">
-                <a className="text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Home</a>
-                <span className="material-symbols-outlined text-sm text-outline-variant">chevron_right</span>
-                <a className="text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Government</a>
-                <span className="material-symbols-outlined text-sm text-outline-variant">chevron_right</span>
-                <span className="text-label-sm text-primary font-bold">SSF</span>
-            </nav>
+        <main className="max-w-6xl mx-auto px-6 py-10 pb-32">
+            
             <div className="mb-12">
                 <h2 className="text-4xl md:text-5xl font-extrabold text-on-surface mb-4 tracking-tight">Social Security Fund</h2>
                 <p className="text-on-surface-variant text-lg max-w-2xl leading-relaxed">Securely access your SSF account. Enter your official credentials to fetch your contribution details and status.</p>

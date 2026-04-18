@@ -1,17 +1,10 @@
 const SocialSecurityPaymentPage = () => {
     return (
-        <main className="pt-24 pb-32 px-6 max-w-7xl mx-auto">
-            <div className="mb-8 flex items-center gap-2 text-on-surface-variant">
-                <span className="material-symbols-outlined text-sm">arrow_back</span>
-                <span className="text-sm font-medium">Back to SSF Portal</span>
-            </div>
+        <main className="pt-10 pb-32 px-6 max-w-6xl mx-auto">
+         
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-7 space-y-8">
-                    <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant mb-4">
-                            <span className="material-symbols-outlined text-[18px]" >check_circle</span>
-                            <span className="text-xs font-bold uppercase tracking-wider">Details Verified</span>
-                        </div>
+                    <div> 
                         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-on-surface mb-2">Social Security Fund</h1>
                         <p className="text-on-surface-variant text-lg">Payment Review &amp; Confirmation</p>
                     </div>
